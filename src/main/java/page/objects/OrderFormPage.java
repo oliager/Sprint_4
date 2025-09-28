@@ -4,42 +4,55 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import utils.Utils;
+
 
 public class OrderFormPage {
-    private WebDriver driver;
+    private final WebDriver driver;
+    private final WebDriverWait waitDriver;
 
     //локаторы для формы заказа и ее полей
-    private By orderForm = By.xpath(".//div[text()='Для кого самокат']/parent::div");
-    private By nameField = By.xpath(".//input[@placeholder='* Имя']");
-    private By surnameField = By.xpath(".//input[@placeholder='* Фамилия']");
-    private By addressField = By.xpath(".//input[@placeholder='* Адрес: куда привезти заказ']");
-    private By metroField = By.xpath(".//input[@placeholder='* Станция метро']");
-    private By telephoneField = By.xpath(".//input[@placeholder='* Телефон: на него позвонит курьер']");
+    private final By orderForm = By.xpath(".//div[text()='Для кого самокат']/parent::div");
+    private final By nameField = By.xpath(".//input[@placeholder='* Имя']");
+    private final By surnameField = By.xpath(".//input[@placeholder='* Фамилия']");
+    private final By addressField = By.xpath(".//input[@placeholder='* Адрес: куда привезти заказ']");
+    private final By metroField = By.xpath(".//input[@placeholder='* Станция метро']");
+    private final By telephoneField = By.xpath(".//input[@placeholder='* Телефон: на него позвонит курьер']");
 
     //локатор для кнопки далее
-    private By buttonNext = By.xpath(".//button[text()='Далее']");
+    private final By buttonNext = By.xpath(".//button[text()='Далее']");
 
-    //локаторы для второй страницы формы заказа
-    private By detailsForm = By.xpath(".//div[text()='Про аренду']/parent::div");
-    private By dateField = By.xpath(".//input[@placeholder='* Когда привезти самокат']");
-    private By datePicker = By.className("react-datepicker__month");
-    private By durationOfRentalField = By.className("Dropdown-root");
-    private By commentField = By.xpath(".//input[@placeholder='Комментарий для курьера']");
+    //локаторы для полей второй страницы формы заказа
+    private final By detailsForm = By.xpath(".//div[text()='Про аренду']/parent::div");
+    private final By dateField = By.xpath(".//input[@placeholder='* Когда привезти самокат']");
+    private final By datePicker = By.className("react-datepicker__month");
+    private final By durationOfRentalField = By.className("Dropdown-root");
+    private final By commentField = By.xpath(".//input[@placeholder='Комментарий для курьера']");
 
     //локатор для кнопки Заказать
-    private By orderButton = By.xpath(".//div[contains(@class, 'Order_Buttons')]//button[text()='Заказать']");
-    private By formConfirm = By.className("Order_Overlay__3KW-T");
-    private By yesButton = By.xpath(".//button[text()='Да']");
-    private By textInOrderConfirmedHeader = By.className("Order_ModalHeader__3FDaJ");
+    private final By orderButton = By.xpath(".//div[contains(@class, 'Order_Buttons')]//button[text()='Заказать']");
+    //локатор для окна "Хотите оформить заказ"
+    private final By formConfirm = By.className("Order_Overlay__3KW-T");
+    //локатор для кнопки Да
+    private final By yesButton = By.xpath(".//button[text()='Да']");
+    //локатор для текста в окне подтвержденного заказа
+    private final By textOfConfirmedOrder = By.className("Order_Text__2broi");
+
+
 
     public OrderFormPage(WebDriver driver) {
         this.driver = driver;
+        waitDriver = new WebDriverWait(driver, Utils.EXPLICIT_WAIT_3SEC);
+    }
+
+    //метод для ожидания появления элемента
+    public void waitForElementVisible(By locator) {
+         waitDriver.until(ExpectedConditions.visibilityOfElementLocated(locator));
     }
 
     //метод для ожидания появления формы заказа
     public void waitForLoadForm(){
-        new WebDriverWait(driver, 3).
-                until(ExpectedConditions.visibilityOfElementLocated(orderForm));
+        waitForElementVisible(orderForm);
     }
     //методЫ для заполнения формы
     public void setName(String name) {
@@ -56,38 +69,35 @@ public class OrderFormPage {
         driver.findElement(metroField).click();
 
         By metroSelect = By.xpath(".//div[@class='select-search__select']//*[text()='" + metro +"']");
-        new WebDriverWait(driver, 3).
-                until(ExpectedConditions.visibilityOfElementLocated(metroSelect));
+        waitForElementVisible(metroSelect);
         driver.findElement(metroSelect).click();
     }
     public void setTelephone(String telephone) {
         driver.findElement(telephoneField).sendKeys(telephone);
     }
 
-    //метод для становления кнопки далее кликабельной и нажатия на нее
+    //метод для ожидания кнопки "Далее" кликабельной и нажатия на нее
     public void clickButtonNext(){
-        new WebDriverWait(driver, 3).
+        waitDriver.
                 until(ExpectedConditions.elementToBeClickable(buttonNext));
         driver.findElement(buttonNext).click();
     }
-    //метод для ожидания появления формы заказа
+    //метод для ожидания появления формы заказа - второй страницы
     public void waitForLoadDetailsForm(){
-        new WebDriverWait(driver, 3).
-                until(ExpectedConditions.visibilityOfElementLocated(detailsForm));
+        waitForElementVisible(detailsForm);
     }
 
     //методЫ для заполнения формы
     public void setDate() {
         driver.findElement(dateField).click();
-        new WebDriverWait(driver, 3).
+        waitDriver.
                 until(ExpectedConditions.visibilityOfAllElementsLocatedBy(datePicker));
         driver.findElement(datePicker).click();
     }
     public void setDuration(String duration) {
         driver.findElement(durationOfRentalField).click();
         By durationSelect = By.xpath(".//div[@class='Dropdown-menu']//*[text()='"+duration+"']");
-        new WebDriverWait(driver, 3).
-                until(ExpectedConditions.visibilityOfElementLocated(durationSelect));
+        waitForElementVisible(durationSelect);
         driver.findElement(durationSelect).click();
     }
     public void setColor(String color) {
@@ -97,19 +107,21 @@ public class OrderFormPage {
     public void setComment(String comment){
         driver.findElement(commentField).sendKeys(comment);
     }
+
+    //метод для клика по кнопке Заказать после заполнения полей формы
     public void clickOrderScooterButton() {
         driver.findElement(orderButton).click();
     }
+    //метод для клика по кнопке "Да" на странице "Хотите оформить заказ"
     public void clickYes() {
-        new WebDriverWait(driver, 3).
-                until(ExpectedConditions.visibilityOfElementLocated(formConfirm));
+        waitForElementVisible(formConfirm);
         driver.findElement(yesButton).click();
     }
-    //метод для проверки появления окна подтверждения заказа -Заказ оформлен
-    public String textInOrderConfirmedHeader(){
-        new WebDriverWait(driver, 3)
-                .until(ExpectedConditions.visibilityOfElementLocated(textInOrderConfirmedHeader));
-        return driver.findElement(textInOrderConfirmedHeader).getText();
+
+    //метод для получения текста со страницы с подтвержденным заказом
+    public String getTextOfConfirmedOrder(){
+        waitForElementVisible(textOfConfirmedOrder);
+        return driver.findElement(textOfConfirmedOrder).getText();
     }
 
 }
