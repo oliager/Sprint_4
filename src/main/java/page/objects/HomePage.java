@@ -2,10 +2,20 @@ package page.objects;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import utils.Utils;
+
+import java.time.Duration;
 
 
 public class HomePage {
     private final WebDriver driver;
+    private final WebDriverWait waitDriver;
+
+
+    //локатор логотипа самоката
+    private final  By scooterLogo = By.className("Header_LogoScooter__3lsAR");
 
     //локатор для кнопок-вопросов списка вопросы о важном
     private final By dropdownListButton = By.className("accordion__button");
@@ -21,6 +31,19 @@ public class HomePage {
 
     public HomePage(WebDriver driver) {
         this.driver = driver;
+        waitDriver = new WebDriverWait(driver, Duration.ofSeconds(Utils.EXPLICIT_WAIT_3SEC));
+    }
+
+    //метод для нажатия на логотип самоката
+    public void clickOnLogoScooter(){
+        driver.findElement(scooterLogo).click();
+    }
+    //метод для ожидания загрузки урла домашней страницы
+    public void waitForUrlOfHomePage(){
+        waitDriver.until(ExpectedConditions.urlToBe(Utils.URL_SCOOTER));
+    }
+    public String getActualUrl(){
+        return driver.getCurrentUrl();
     }
 
     // метод для нажатия на кнопку-вопрос раскрывающегося списка, принимает номер вопроса(индекс),

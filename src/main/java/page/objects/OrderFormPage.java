@@ -6,6 +6,8 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import utils.Utils;
 
+import java.time.Duration;
+
 
 public class OrderFormPage {
     private final WebDriver driver;
@@ -42,7 +44,7 @@ public class OrderFormPage {
 
     public OrderFormPage(WebDriver driver) {
         this.driver = driver;
-        waitDriver = new WebDriverWait(driver, Utils.EXPLICIT_WAIT_3SEC);
+        waitDriver = new WebDriverWait(driver, Duration.ofSeconds(Utils.EXPLICIT_WAIT_3SEC));
     }
 
     //метод для ожидания появления элемента
