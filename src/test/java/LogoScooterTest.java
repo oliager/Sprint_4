@@ -43,10 +43,10 @@ public class LogoScooterTest {
 
 
     }
-    /*@After
+    @After
     public void teardown() {
         // Закрываем браузер
         driver.quit();
     }
-     */
+
 }
